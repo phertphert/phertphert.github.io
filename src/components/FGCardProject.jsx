@@ -35,11 +35,12 @@ const FGProject = ({ Img, Title, Description, Link: ProjectLink, id, ProjDate })
         <div className="absolute inset-0 bg-gradient-to-br dark:from-blue-500/20 from-blue-500/20 dark:via-purple-500/20 via-purple-500/20 dark:to-pink-500/20 to-pink-500/20 opacity-50 dark:opacity-50 dark:group-hover:opacity-70 group-hover:opacity-70 transition-all duration-500"></div>
     
         <div className="relative p-5 z-10">
-          <div className="relative overflow-hidden rounded-lg">
+          <div className="relative overflow-hidden rounded-lg" style={{ height: "220px" }}>
             <img
               src={Img}
               alt={Title}
               className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 dark:text-white/90 text-black/90"
+              style={{ height: "100%", width: "100%", objectFit: "cover" }}
             />
           </div>
           
@@ -56,7 +57,7 @@ const FGProject = ({ Img, Title, Description, Link: ProjectLink, id, ProjDate })
               </span>
             </div>
           </div>
-          <p className="mt-3 dark:text-gray-300/80 text-gray-700/80 text-sm leading-relaxed line-clamp-2 transition-colors duration-500">
+          <p className="mt-3 dark:text-gray-300/80 text-gray-700/80 text-sm leading-relaxed transition-colors duration-500 line-clamp-2 min-h-[3.6em]">
             {Description}
           </p>
           
@@ -68,7 +69,7 @@ const FGProject = ({ Img, Title, Description, Link: ProjectLink, id, ProjDate })
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={handleLink}
-                  className="inline-flex items-center space-x-2 dark:text-blue-400 text-blue-500 dark:hover:text-blue-300 hover:text-blue-700 transition-colors duration-500"
+                  className="inline-flex items-center space-x-2 py-2 dark:text-blue-400 text-blue-500 dark:hover:text-blue-300 hover:text-blue-700 transition-colors duration-500"
                 >
                   <span className="text-sm font-medium">View Full Image</span>
                   <ExternalLink className="w-4 h-4" />
