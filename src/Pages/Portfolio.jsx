@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { db, collection } from "../firebase";
-import { getDocs } from "firebase/firestore";
+import { getDocs, query, orderBy } from "firebase/firestore";
 import PropTypes from "prop-types";
 import SwipeableViews from "react-swipeable-views";
 import { useTheme } from "@mui/material/styles";
@@ -110,9 +110,9 @@ function a11yProps(index) {
 export default function FullWidthTabs() {
   const theme = useTheme();
   const [value, setValue] = useState(0);
-  const [fgprojects, setFGProjects] = useState([]);
-  const [mgprojects, setMGProjects] = useState([]);
-  const [finalprojects, setFINALProjects] = useState([]);
+  const [fgProjects, setFGProjects] = useState([]);
+  const [mgProjects, setMGProjects] = useState([]);
+  const [finalProjects, setFinalProjects] = useState([]);
   const [showAllFGProjects, setShowAllFGProjects] = useState(false);
   const [showAllMGProjects, setShowAllMGProjects] = useState(false);
   const [showAllFINALProjects, setShowAllFINALProjects] = useState(false);
@@ -120,58 +120,35 @@ export default function FullWidthTabs() {
   const initialItems = isMobile ? 4 : 6;
 
   useEffect(() => {
-    // Initialize AOS once
-    AOS.init({
-      once: false, // This will make animations occur only once
-    });
-  }, []);
+    AOS.init({ once: false });
+    const fetchAllProjects = async () => {
+      const fgQuery = query(collection(db, "fgprojects"), orderBy("ProjDate", "asc"));
+      const mgQuery = query(collection(db, "mgprojects"), orderBy("ProjDate", "asc"));
+      const finalQuery = query(collection(db, "finalprojects"), orderBy("ProjDate", "asc"));
 
-  const fetchData = useCallback(async () => {
-    try {
-      const fgprojectsCollection = collection(db, "fgprojects");
-      const mgprojectsCollection = collection(db, "mgprojects");
-      const finalprojectsCollection = collection(db, "finalprojects");
-
-      const [fgprojectsSnapshot, mgprojectsSnapshot, finalprojectsSnapshot] = await Promise.all([
-        getDocs(fgprojectsCollection),
-        getDocs(mgprojectsCollection),
-        getDocs(finalprojectsCollection),
+      const [fgSnapshot, mgSnapshot, finalSnapshot] = await Promise.all([
+        getDocs(fgQuery),
+        getDocs(mgQuery),
+        getDocs(finalQuery)
       ]);
 
-      const fgprojectsData = fgprojectsSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-        TechStack: doc.data().TechStack || [],
-      }));
+      const sortByProjDateAsc = arr =>
+        arr.sort((a, b) => {
+          const aDate = a.ProjDate?.seconds || 0;
+          const bDate = b.ProjDate?.seconds || 0;
+          return aDate - bDate;
+        });
 
-      const mgprojectsData = mgprojectsSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-        TechStack: doc.data().TechStack || [],
-      }));
-
-      const finalprojectsData = finalprojectsSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-        TechStack: doc.data().TechStack || [],
-      }));
-      
-      setFGProjects(fgprojectsData);
-      setMGProjects(mgprojectsData);
-      setFINALProjects(finalprojectsData);
-
-      // Store in localStorage
-      localStorage.setItem("fgprojects", JSON.stringify(fgprojectsData));
-      localStorage.setItem("mgprojects", JSON.stringify(mgprojectsData));
-      localStorage.setItem("finalprojects", JSON.stringify(finalprojectsData));
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+      setFGProjects(sortByProjDateAsc(fgSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))));
+      setMGProjects(sortByProjDateAsc(mgSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))));
+      setFinalProjects(sortByProjDateAsc(finalSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))));
+    };
+    fetchAllProjects();
   }, []);
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+  const displayedFGProjects = showAllFGProjects ? fgProjects : fgProjects.slice(0, initialItems);
+  const displayedMGProjects = showAllMGProjects ? mgProjects : mgProjects.slice(0, initialItems);
+  const displayedFINALProjects = showAllFINALProjects ? finalProjects : finalProjects.slice(0, initialItems);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -186,10 +163,6 @@ export default function FullWidthTabs() {
       setShowAllFINALProjects(prev => !prev);
     }
   }, []);
-
-  const displayedFGProjects = showAllFGProjects ? fgprojects : fgprojects.slice(0, initialItems);
-  const displayedMGProjects = showAllMGProjects ? mgprojects : mgprojects.slice(0, initialItems);
-  const displayedFINALProjects = showAllFINALProjects ? finalprojects : finalprojects.slice(0, initialItems);
 
   return (
     <div className="md:px-[10%] px-[5%] w-full sm:mt-0 mt-[3rem] dark:bg-[#030014] bg-[#f8f6f8] overflow-hidden transition-colors duration-500" id="Portfolio">
@@ -308,24 +281,25 @@ export default function FullWidthTabs() {
           <TabPanel value={value} index={0} dir={theme.direction}>
             <div className="container mx-auto flex justify-center items-center overflow-hidden">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 2xl:grid-cols-3 gap-5">
-                {displayedFGProjects.map((fgprojects, index) => (
+                {displayedFGProjects.map((project, index) => (
                   <div
-                    key={fgprojects.id || index}
+                    key={project.id || index}
                     data-aos={index % 3 === 0 ? "fade-up-right" : index % 3 === 1 ? "fade-up" : "fade-up-left"}
                     data-aos-duration={index % 3 === 0 ? "1000" : index % 3 === 1 ? "1200" : "1000"}
                   >
                     <FGCardProject
-                      Img={fgprojects.Img}
-                      Title={fgprojects.Title}
-                      Description={fgprojects.Description}
-                      Link={fgprojects.Link}
-                      id={fgprojects.id}
+                      Img={project.Img}
+                      Title={project.Title}
+                      Description={project.Description}
+                      Link={project.Link}
+                      id={project.id}
+                      ProjDate={project.ProjDate}
                     />
                   </div>
                 ))}
               </div>
             </div>
-            {fgprojects.length > initialItems && (
+            {fgProjects.length > initialItems && (
               <div className="mt-6 w-full flex justify-start">
                 <ToggleButton
                   onClick={() => toggleShowMore('fgprojects')}
@@ -338,24 +312,25 @@ export default function FullWidthTabs() {
           <TabPanel value={value} index={1} dir={theme.direction}>
             <div className="container mx-auto flex justify-center items-center overflow-hidden">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 2xl:grid-cols-3 gap-5">
-                {displayedMGProjects.map((mgprojects, index) => (
+                {displayedMGProjects.map((project, index) => (
                   <div
-                    key={mgprojects.id || index}
+                    key={project.id || index}
                     data-aos={index % 3 === 0 ? "fade-up-right" : index % 3 === 1 ? "fade-up" : "fade-up-left"}
                     data-aos-duration={index % 3 === 0 ? "1000" : index % 3 === 1 ? "1200" : "1000"}
                   >
                     <MGCardProject
-                      Img={mgprojects.Img}
-                      Title={mgprojects.Title}
-                      Description={mgprojects.Description}
-                      Link={mgprojects.Link}
-                      id={mgprojects.id}
+                      Img={project.Img}
+                      Title={project.Title}
+                      Description={project.Description}
+                      Link={project.Link}
+                      id={project.id}
+                      ProjDate={project.ProjDate}
                     />
                   </div>
                 ))}
               </div>
             </div>
-            {mgprojects.length > initialItems && (
+            {mgProjects.length > initialItems && (
               <div className="mt-6 w-full flex justify-start">
                 <ToggleButton
                   onClick={() => toggleShowMore('mgprojects')}
@@ -368,24 +343,25 @@ export default function FullWidthTabs() {
           <TabPanel value={value} index={2} dir={theme.direction}>
             <div className="container mx-auto flex justify-center items-center overflow-hidden">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 2xl:grid-cols-3 gap-5">
-                {displayedFINALProjects.map((finalprojects, index) => (
+                {displayedFINALProjects.map((project, index) => (
                   <div
-                    key={finalprojects.id || index}
+                    key={project.id || index}
                     data-aos={index % 3 === 0 ? "fade-up-right" : index % 3 === 1 ? "fade-up" : "fade-up-left"}
                     data-aos-duration={index % 3 === 0 ? "1000" : index % 3 === 1 ? "1200" : "1000"}
                   >
                     <FINALCardProject
-                      Img={finalprojects.Img}
-                      Title={finalprojects.Title}
-                      Description={finalprojects.Description}
-                      Link={finalprojects.Link}
-                      id={finalprojects.id}
+                      Img={project.Img}
+                      Title={project.Title}
+                      Description={project.Description}
+                      Link={project.Link}
+                      id={project.id}
+                      ProjDate={project.ProjDate}
                     />
                   </div>
                 ))}
               </div>
             </div>
-            {finalprojects.length > initialItems && (
+            {finalProjects.length > initialItems && (
               <div className="mt-6 w-full flex justify-start">
                 <ToggleButton
                   onClick={() => toggleShowMore('finalprojects')}

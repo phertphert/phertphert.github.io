@@ -87,9 +87,10 @@ const Skills = () => {
   const skills = [
     { name: "HTML", level: 85, description: "Markup language for structuring web content" },
     { name: "CSS", level: 75, description: "Stylesheets for layout, colors, and fonts" },
-    { name: "JavaScript", level: 50, description: "Programming language for interactivity" },
-    { name: "TailWindCSS", level: 40, description: "Utility-first CSS framework" },
-    { name: "React", level: 20, description: "JavaScript library for building UIs" },
+    { name: "JavaScript", level: 60, description: "Programming language for interactivity" },
+    { name: "Bootstrap", level: 50, description: "Building basic responsive webpages" },
+    { name: "TailWindCSS", level: 60, description: "Utility-first CSS framework" },
+    { name: "React", level: 30, description: "JavaScript library for building UIs" },
     { name: "Git", level: 20, description: "Version control system for tracking changes" },
   ];
 

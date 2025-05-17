@@ -174,8 +174,8 @@ const AboutPage = () => {
       icon: Code,
       color: "from-[#6366f1] to-[#a855f7]",
       value: totalProjects,
-      label: "Total Projects",
-      description: "Web Projects Completed",
+      label: "Total Outputs",
+      description: "Lab/Lec Outputs Completed",
       animation: "fade-right",
     },
     {

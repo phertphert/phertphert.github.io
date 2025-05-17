@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ExternalLink, ArrowRight } from 'lucide-react';
 
-const FINALProject = ({ Img, Title, Description, Link: ProjectLink, id }) => {
+const FINALProject = ({ Img, Title, Description, Link: ProjectLink, id, ProjDate }) => {
   const handleLiveDemo = (e) => {
     if (!ProjectLink) {
       console.log("ProjectLink empty");
@@ -18,7 +18,13 @@ const FINALProject = ({ Img, Title, Description, Link: ProjectLink, id }) => {
       alert("Project details N/A");
     }
   };
-  
+
+  const handleLink = (e) => {
+    if (!ProjectLink) {
+      e.preventDefault();
+      alert("No link available");
+    }
+  };
 
   return (
     <div className="group relative w-full">
@@ -38,6 +44,11 @@ const FINALProject = ({ Img, Title, Description, Link: ProjectLink, id }) => {
           <div className="mt-4 space-y-3">
             <h3 className="text-xl font-semibold bg-gradient-to-r dark:from-blue-400 from-blue-600 dark:via-purple-400 via-purple-500 dark:to-pink-400 to-pink-600 bg-clip-text text-transparent transition-colors duration-500">
               {Title}
+              <span className="ml-2 text-xs font-normal text-gray-400">
+                {ProjDate && ProjDate.seconds
+                  ? new Date(ProjDate.seconds * 1000).toLocaleDateString()
+                  : <span className="text-red-400">No Date</span>}
+              </span>
             </h3>
             
             <p className="dark:text-gray-300/80 text-gray-700/80 text-sm leading-relaxed line-clamp-2 transition-colors duration-500">
@@ -45,34 +56,48 @@ const FINALProject = ({ Img, Title, Description, Link: ProjectLink, id }) => {
             </p>
             
             <div className="pt-4 flex items-center justify-between">
-              {ProjectLink ? (
+              {/* If Title contains "Lecture" or "Image", show "View Full Image" button; else show default buttons */}
+              {(Title?.toLowerCase().includes("lecture") || Title?.toLowerCase().includes("image")) ? (
                 <a
-                href={ProjectLink || "#"}
+                  href={ProjectLink || "#"}
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={handleLiveDemo}
+                  onClick={handleLink}
                   className="inline-flex items-center space-x-2 dark:text-blue-400 text-blue-500 dark:hover:text-blue-300 hover:text-blue-700 transition-colors duration-500"
                 >
-                  <span className="text-sm font-medium">Live Demo</span>
+                  <span className="text-sm font-medium">View Full Image</span>
                   <ExternalLink className="w-4 h-4" />
                 </a>
               ) : (
-                <span className="text-gray-500 text-sm">Demo Not Available</span>
-              )}
-              
-     
-
-              {id ? (
-                <Link
-                  to={`/project/${id}`}
-                  onClick={handleDetails}
-                  className="inline-flex items-center space-x-2 px-4 py-2 rounded-lg dark:bg-white/5 bg-black/10 dark:hover:bg-white/10 hover:bg-black/20 dark:text-white/90 text-black/90 transition-all duration-500 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
-                >
-                  <span className="text-sm font-medium">Details</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              ) : (
-                <span className="text-gray-500 text-sm">Details Not Available</span>
+                <>
+                  {ProjectLink ? (
+                    <a
+                      href={ProjectLink || "#"}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={handleLiveDemo}
+                      className="inline-flex items-center space-x-2 dark:text-blue-400 text-blue-500 dark:hover:text-blue-300 hover:text-blue-700 transition-colors duration-500"
+                    >
+                      <span className="text-sm font-medium">Live Demo</span>
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
+                  ) : (
+                    <span className="text-gray-500 text-sm">Demo Not Available</span>
+                  )}
+                  
+                  {id ? (
+                    <Link
+                      to={`/project/${id}`}
+                      onClick={handleDetails}
+                      className="inline-flex items-center space-x-2 px-4 py-2 rounded-lg dark:bg-white/5 bg-black/10 dark:hover:bg-white/10 hover:bg-black/20 dark:text-white/90 text-black/90 transition-all duration-500 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                    >
+                      <span className="text-sm font-medium">Details</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </Link>
+                  ) : (
+                    <span className="text-gray-500 text-sm">Details Not Available</span>
+                  )}
+                </>
               )}
             </div>
           </div>
@@ -83,5 +108,4 @@ const FINALProject = ({ Img, Title, Description, Link: ProjectLink, id }) => {
     </div>
   );
 };
-
 export default FINALProject;

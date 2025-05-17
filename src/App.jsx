@@ -75,7 +75,7 @@ function App() {
   const [showWelcome, setShowWelcome] = useState(true);
 
   return (
-    <CustomThemeProvider> {/* 🆕 Wrap the whole app in Theme Provider */}
+    <CustomThemeProvider>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LandingPage showWelcome={showWelcome} setShowWelcome={setShowWelcome} />} />

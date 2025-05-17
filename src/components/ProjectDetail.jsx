@@ -6,8 +6,8 @@ import {
 } from "lucide-react";
 import Swal from 'sweetalert2';
 import ThemeToggle from "./ThemeToggle";
-import lightIcon from "../assets/light-icon.png";
-import darkIcon from "../assets/dark-icon.png";
+import lightIcon from "../assets/light-icon.png"; // Replace with your light mode icon
+import darkIcon from "../assets/dark-icon.png"; // Replace with your dark mode icon
 
 const TECH_ICONS = {
   React: Globe,
