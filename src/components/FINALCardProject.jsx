@@ -45,11 +45,14 @@ const FINALProject = ({ Img, Title, Description, Link: ProjectLink, id, ProjDate
           </div>
           
           {/* Title and Date aligned horizontally */}
-          <div className="mt-4 flex items-center justify-between space-y-0">
-            <h3 className="text-xl font-semibold bg-gradient-to-r dark:from-blue-400 from-blue-600 dark:via-purple-400 via-purple-500 dark:to-pink-400 to-pink-600 bg-clip-text text-transparent transition-colors duration-500 m-0">
+          <div className="mt-4 flex justify-between items-start space-y-0">
+            <h3
+              className="text-xl font-semibold bg-gradient-to-r dark:from-blue-400 from-blue-600 dark:via-purple-400 via-purple-500 dark:to-pink-400 to-pink-600 bg-clip-text text-transparent transition-colors duration-500 m-0 leading-snug line-clamp-2 min-h-[2.8em]"
+              style={{ minHeight: "2.8em" }}
+            >
               {Title}
             </h3>
-            <div className="ml-4 flex-shrink-0">
+            <div className="ml-4 flex-shrink-0 self-start">
               <span className="inline-block px-3 py-1 rounded-full bg-gray-200 dark:bg-gray-700 text-xs font-medium text-gray-700 dark:text-gray-200 shadow transition-colors duration-500">
                 {ProjDate && ProjDate.seconds
                   ? new Date(ProjDate.seconds * 1000).toLocaleDateString()
