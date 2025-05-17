@@ -25,6 +25,8 @@ const MGProject = ({ Img, Title, Description, Link: ProjectLink, id, ProjDate })
       alert("No link available");
     }
   };
+  
+  console.log("MGCardProject Date prop:", ProjDate);
 
   return (
     <div className="group relative w-full">
@@ -41,22 +43,25 @@ const MGProject = ({ Img, Title, Description, Link: ProjectLink, id, ProjDate })
             />
           </div>
           
-          <div className="mt-4 space-y-3">
-            <h3 className="text-xl font-semibold bg-gradient-to-r dark:from-blue-400 from-blue-600 dark:via-purple-400 via-purple-500 dark:to-pink-400 to-pink-600 bg-clip-text text-transparent transition-colors duration-500">
+          {/* Title and Date aligned horizontally */}
+          <div className="mt-4 flex items-center justify-between space-y-0">
+            <h3 className="text-xl font-semibold bg-gradient-to-r dark:from-blue-400 from-blue-600 dark:via-purple-400 via-purple-500 dark:to-pink-400 to-pink-600 bg-clip-text text-transparent transition-colors duration-500 m-0">
               {Title}
-              <span className="ml-2 text-xs font-normal text-gray-400">
+            </h3>
+            <div className="ml-4 flex-shrink-0">
+              <span className="inline-block px-3 py-1 rounded-full bg-gray-200 dark:bg-gray-700 text-xs font-medium text-gray-700 dark:text-gray-200 shadow transition-colors duration-500">
                 {ProjDate && ProjDate.seconds
                   ? new Date(ProjDate.seconds * 1000).toLocaleDateString()
                   : <span className="text-red-400">No Date</span>}
               </span>
-            </h3>
-            
-            <p className="dark:text-gray-300/80 text-gray-700/80 text-sm leading-relaxed line-clamp-2 transition-colors duration-500">
-              {Description}
-            </p>
-            
-            <div className="pt-4 flex items-center justify-between">
-              {/* If Title contains "Lecture", show "View Full Image" button; else show default buttons */}
+            </div>
+          </div>
+          <p className="mt-3 dark:text-gray-300/80 text-gray-700/80 text-sm leading-relaxed line-clamp-2 transition-colors duration-500">
+            {Description}
+          </p>
+          
+          <div className="pt-4 flex items-center justify-between">
+              {/* If Title contains "Lecture" or "Image", show "View Full Image" button; else show default buttons */}
               {(Title?.toLowerCase().includes("lecture") || Title?.toLowerCase().includes("image")) ? (
                 <a
                   href={ProjectLink || "#"}
@@ -100,7 +105,6 @@ const MGProject = ({ Img, Title, Description, Link: ProjectLink, id, ProjDate })
                 </>
               )}
             </div>
-          </div>
           
           <div className="absolute inset-0 border dark:border-white/10 border-black/20 dark:group-hover:border-purple-500/50 group-hover:border-purple-500/50 rounded-xl transition-colors duration-500 -z-50"></div>
         </div>
